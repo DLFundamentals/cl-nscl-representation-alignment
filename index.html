@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CL & NSCL Alignment</title>
+    <title>CL ≈ NSCL v2</title>
     <link rel="icon" type="image/png" href="lab-logo.png" />
 
     <!-- Tailwind CSS CDN -->
@@ -46,14 +46,14 @@
             · <a href="https://www.linkedin.com/in/priyadarsi-mishra/" class="hover:underline" target="_blank">Priyadarsi Mishra</a>
             · <a href="https://tomergalanti.github.io/index.html" class="hover:underline" target="_blank">Tomer Galanti</a>
           </p>
-          <p class="text-slate-500 font-medium">Texas A&amp;M University</p>
-          <p class="text-slate-600 italic">Under review</p>
+          <p class="text-slate-500 font-medium">Texas A&amp; University</p>
+          <p class="text-slate-600 italic">Paper under review</p>
         </div>
       </section>
 
       <!-- Links Section -->
       <section class="mt-10 flex flex-col md:flex-row items-center justify-center gap-8">
-        <a href="#" class="flex flex-col items-center hover:scale-105 transition-transform" target="_blank">
+        <a href="https://github.com/DLFundamentals/understanding_ssl_v2" class="flex flex-col items-center hover:scale-105 transition-transform" target="_blank">
           <i class="fab fa-github text-5xl text-slate-800"></i>
           <span class="mt-2 text-md text-slate-600">Code</span>
         </a>
@@ -68,7 +68,7 @@
         <h2 class="text-2xl font-bold mb-4">Overview</h2>
         <p class="text-lg mb-4">
           Self-supervised contrastive learning (CL) has achieved remarkable success, producing representations that rival supervised pre-training. 
-          Recent theory has shown that the CL loss closely approximates a supervised surrogate, Negatives-Only Supervised Contrastive Learning (NSCL), as the number of classes grows. 
+          <a href="https://dlfundamentals.github.io/ssl-is-approximately-sl/" class="text-blue-600 hover:underline">Recent theory</a> has shown that the CL loss closely approximates a supervised surrogate, Negatives-Only Supervised Contrastive Learning (NSCL), as the number of classes grows. 
           But this similarity at the loss-level leaves a crucial question unresolved.
         </p>
 
@@ -97,65 +97,171 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
               <div class="flex flex-col items-center">
-                <img src="https://placehold.co/600x400/fecaca/b91c1c?text=Weight+Space+Divergence" alt="Weight Space Divergence" class="w-full object-contain rounded shadow transition hover:scale-105" />
+                <img src="images/weight_space_angle.png" alt="Weight Space Divergence" class="w-full object-contain rounded shadow transition hover:scale-105" />
                 <span class="mt-2 text-sm text-slate-500 text-center"><strong>(a) Weight Space:</strong> Model parameters diverge significantly as training progresses.</span>
               </div>
               <div class="flex flex-col items-center">
-                <img src="https://placehold.co/600x400/dbeafe/1d4ed8?text=Representation+Space+Alignment" alt="Representation Space Alignment" class="w-full object-contain rounded shadow transition hover:scale-105" />
+                <img src="images/rep_space_angle.png" alt="Representation Space Alignment" class="w-full object-contain rounded shadow transition hover:scale-105" />
                 <span class="mt-2 text-sm text-slate-500 text-center"><strong>(b) Representation Space:</strong> Learned features remain closely aligned, maintaining high similarity.</span>
               </div>
             </div>
              <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">
-              Corresponds to Figures 1, 6 in the paper.
+              Corresponds to Figure 1 in the paper.
             </p>
-
-            <p class="mt-6">
-              We prove that the Frobenius norm distance between the similarity matrices is bounded, ensuring this alignment.
-            </p>
-            <p class="mb-2 text-center text-sm md:text-base">
-                $$||\Sigma_{T}^{\textcolor{red}{\text{CL}}}-\Sigma_{T}^{\textcolor{blue}{\text{NSCL}}}||_{F} \le \exp\left(\frac{1}{2\tau^{2}B}\sum_{t=0}^{T-1}\eta_{t}\right)\frac{1}{\tau\sqrt{B}}\left(\sum_{t=0}^{T-1}\eta_{t}\right)\Delta_{C,\delta}(B;\tau)$$
-            </p>
-            <p class="text-sm italic text-right text-slate-500 mb-4">Theorem (1)</p>
         </div>
+        <!-- End Claim 1 -->
 
-        <!-- Claim 2 -->
-        <div class="mt-10 mb-10 p-6 border rounded-md shadow-sm bg-white fade-in-up">
+        <p class="text-lg font-medium text-red-400 mb-4">TODOs</p>
+        <ul class="list-disc list-inside text-red-400 mb-6">
+          <li>Explain evaluation metrics and datasets.</li>
+          <li>Ensure all mathematical expressions are correctly formatted and displayed.</li>
+          <li>Verify all links (Code, Paper) point to the correct destinations.</li>
+          <li>Double-check all citations and references for accuracy.</li>
+        </ul>
+        <p class="mt-6">
+          We prove that the Frobenius norm distance between the similarity matrices is bounded, ensuring this alignment.
+        </p>
+        <p class="mb-2 text-center text-sm md:text-base">
+            $$||\Sigma_{T}^{\textcolor{red}{\text{CL}}}-\Sigma_{T}^{\textcolor{blue}{\text{NSCL}}}||_{F} \le \exp\left(\frac{1}{2\tau^{2}B}\sum_{t=0}^{T-1}\eta_{t}\right)\frac{1}{\tau\sqrt{B}}\left(\sum_{t=0}^{T-1}\eta_{t}\right)\Delta_{C,\delta}(B;\tau)$$
+        </p>
+        <p class="text-sm italic text-right text-slate-500 mb-4">Theorem (1)</p>
+
+        <!-- Claim 2 - Factors Influencing Alignment -->
+        <section class="mt-10 mb-10 w-full fade-in-up">
             <h3 class="text-xl font-semibold mb-2">2 · Factors Influencing Alignment</h3>
-            <p class="mb-4">
-                Our theory predicts how alignment should behave under different conditions. We empirically confirm these predictions:
+            <p class="mb-6 text-slate-600">
+                Our theory predicts how alignment should behave under different conditions. We empirically confirm these predictions across multiple datasets by varying key hyperparameters.
             </p>
-            <ul class="list-disc list-inside text-base text-slate-800 space-y-2 mb-6">
-                <li><strong>Number of Classes (C):</strong> Alignment gets stronger as the number of classes increases.</li>
-                <li><strong>Temperature ($\tau$):</strong> Higher temperatures lead to better and more stable alignment.</li>
-                <li><strong>Batch Size (B):</strong> The effect of batch size is coupled with the learning rate schedule, but generally, larger batches improve alignment.</li>
-            </ul>
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              <div class="flex flex-col items-center">
-                <img src="https://placehold.co/600x400/e0e7ff/4338ca?text=Alignment+vs+Classes" alt="Alignment vs Number of Classes" class="w-full object-contain rounded shadow transition hover:scale-105" />
-                <span class="mt-2 text-sm text-slate-500 text-center">More classes lead to higher CKA/RSA.</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <img src="https://placehold.co/600x400/fef3c7/b45309?text=Alignment+vs+Temperature" alt="Alignment vs Temperature" class="w-full object-contain rounded shadow transition hover:scale-105" />
-                <span class="mt-2 text-sm text-slate-500 text-center">Higher temperature ($\tau=1.0$) improves alignment.</span>
-              </div>
+        
+            <!-- Tab Buttons -->
+            <div class="mb-4 border-b border-slate-200">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button onclick="showTab('classes')" id="tab-classes" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
+                        <i class="fas fa-list-ol mr-2"></i> Number of Classes (C)
+                    </button>
+                    <button onclick="showTab('temp')" id="tab-temp" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fas fa-thermometer-half mr-2"></i> Temperature (τ)
+                    </button>
+                    <button onclick="showTab('batch')" id="tab-batch" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fas fa-box mr-2"></i> Batch Size (B)
+                    </button>
+                </nav>
             </div>
-            <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">
-              Corresponds to Figures 3, 4, 5 in the paper.
-            </p>
-        </div>
+        
+            <!-- Tab Content -->
+            <div class="bg-white p-6 border rounded-md shadow-sm">
+                <!-- Content for Number of Classes -->
+                <div id="content-classes" class="tab-content">
+                    <p class="mb-4 text-slate-700"><strong>Finding:</strong> Alignment gets stronger as the number of classes increases. This holds consistently across different datasets.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center space-y-2">
+                            <img src="images/classes/mini_imagenet_cka_heatmap_train-1.png" alt="Mini-ImageNet Classes Experiment - Train" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/classes/mini_imagenet_cka_heatmap_test-1.png" alt="Mini-ImageNet Classes Experiment - Test" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">Mini-ImageNet</span>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <img src="images/classes/tiny_imagenet_cka_heatmap_train-1.png" alt="Tiny-ImageNet Classes Experiment - Train" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/classes/tiny_imagenet_cka_heatmap_test-1.png" alt="Tiny-ImageNet Classes Experiment - Test" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">Tiny-ImageNet</span>
+                        </div>
+                         <div class="text-center space-y-2">
+                            <img src="images/classes/full_imagenet_cka_heatmap_train-1.png" alt="ImageNet-1k Classes Experiment - Train" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                             <img src="images/classes/full_imagenet_cka_heatmap_test-1.png" alt="ImageNet-1k Classes Experiment - Test" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">ImageNet-1k</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">Corresponds to Figure 3 in the paper. The heatmaps show the linear CKA between CL and NSCL models on both train (top, green) and test (bottom, purple) datasets.</p>
+                </div>
+        
+                <!-- Content for Temperature -->
+                <div id="content-temp" class="tab-content hidden">
+                    <p class="mb-4 text-slate-700"><strong>Finding:</strong> Higher temperatures lead to better and more stable alignment. A temperature of τ=1.0 consistently outperforms lower values.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center space-y-2">
+                            <img src="images/tau/cifar100_rsa_plot-1.png" alt="CIFAR-100 Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/tau/cifar100_cka_plot-1.png" alt="CIFAR-100 Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">CIFAR-100</span>
+                        </div>
+                        <div class="text-center space-y-2">
+                           <img src="images/tau/tiny_imagenet_rsa_plot-1.png" alt="Tiny-ImageNet Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/tau/tiny_imagenet_cka_plot-1.png" alt="Tiny-ImageNet Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">Tiny-ImageNet</span>
+                        </div>
+                         <div class="text-center space-y-2">
+                            <img src="images/tau/mini_imagenet_rsa_plot-1.png" alt="Mini-ImageNet Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/tau/mini_imagenet_cka_plot-1.png" alt="Mini-ImageNet Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">Mini-ImageNet</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">Corresponds to Figure 4 in the paper. The plots show RSA (top) and CKA (bottom)
+                      over 300 epochs between CL and NSCL models trained with different temperatures.</p>
+                    </p>
+                </div>
+        
+                <!-- Content for Batch Size -->
+                <div id="content-batch" class="tab-content hidden">
+                    <p class="mb-4 text-slate-700"><strong>Finding:</strong> The effect of batch size is coupled with the learning rate schedule. With appropriate scaling, larger batch sizes generally improve alignment.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center space-y-2">
+                            <img src="images/batches/lr_linear/mini_imagenet_rsa_plot-1.png" alt="Linear Batch Size Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/batches/lr_linear/mini_imagenet_cka_plot-1.png" alt="Linear Batch Size Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">$$\mathcal{O}(B)$$</span>
+                        </div>
+                        <div class="text-center space-y-2">
+                           <img src="images/batches/lr_sqrt/mini_imagenet_rsa_plot-1.png" alt="Sqrt Batch Size Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/batches/lr_sqrt/mini_imagenet_cka_plot-1.png" alt="Sqrt Batch Size Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">$$\mathcal{O}(B^{1/2})$$</span>
+                        </div>
+                         <div class="text-center space-y-2">
+                           <img src="images/batches/lr_sqrt_4/mini_imagenet_rsa_plot-1.png" alt="Sqrt_4 Batch Size Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <img src="images/batches/lr_sqrt_4/mini_imagenet_cka_plot-1.png" alt="Sqrt_4 Batch Size Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                            <span class="mt-2 text-sm text-slate-500 block pt-2">$$\mathcal{O}(B^{1/4})$$</span>
+                        </div>
+                    </div>
+                     <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">Corresponds to Figure 5 in the paper. Here we vary $\eta$ with $B$ across three cases: $\eta=\tfrac{0.3B}{256}$, 
+                      $\eta=\tfrac{0.3\sqrt{B}}{256}$, and $\eta=\tfrac{0.3\sqrt[4]{B}}{256}$. Under $\mathcal{O}(B)$ scaling, CL–NSCL alignment decreases as $B$ grows whereas for the other two cases, alignment increases with $B$. </p>
+                </div>
+            </div>
+        </section>
 
+        <!-- Segue Text -->
+        <p class="text-lg my-8 fade-in-up">
+            So far, we've demonstrated that the alignment between CL and NSCL is not just theoretical but holds up empirically, influenced by factors like class count, temperature, and batch size. But this raises a natural question: why focus specifically on NSCL as the supervised benchmark? Is it truly the best proxy for understanding self-supervised CL, compared to other supervised methods?
+        </p>
+
+        <!-- key question 2--> 
+        <div class="fade-in-up mx-auto my-8 w-full max-w-3xl rounded-md border border-black bg-indigo-50 px-6 py-4 text-center text-lg italic text-slate-800 shadow-sm">
+          <strong>
+             How does the <span class="text-red-600 font-medium">CL</span>-<span class="text-blue-700 font-medium">NSCL</span> alignment compare to other supervised objectives? 
+          </strong>
+        </div>
         <!-- Claim 3 -->
         <div class="mt-10 mb-10 p-6 border rounded-md shadow-sm bg-white fade-in-up">
             <h3 class="text-xl font-semibold mb-2">3 · NSCL is the Best Supervised Proxy</h3>
             <p class="mb-4">
-                How does the <span class="text-red-600 font-medium">CL</span>-<span class="text-blue-700 font-medium">NSCL</span> alignment compare to other supervised objectives? We find that NSCL is a much better proxy for CL than both standard Supervised Contrastive Learning (SCL) and Cross-Entropy (CE). This positions NSCL as a principled bridge for understanding self-supervised learning.
+                We find that NSCL is a much better proxy for CL than both standard Supervised Contrastive Learning (SCL) and Cross-Entropy (CE). This positions NSCL as a principled bridge for understanding self-supervised learning.
             </p>
-            <div class="flex flex-col items-center">
-               <img src="https://placehold.co/800x400/e5e7eb/1f2937?text=Alignment+Comparison" alt="Alignment of CL with NSCL, SCL, and CE" class="w-full max-w-lg object-contain rounded shadow transition hover:scale-105" />
-               <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">
-                  Figure 2: CL-NSCL alignment (blue) is consistently higher than CL-SCL (red) and CL-CE (green).
-               </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center space-y-2">
+                    <img src="images/epochs/cifar100_rsa_plot-1.png" alt="CIFAR-100 Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <img src="images/epochs/cifar100_cka_plot-1.png" alt="CIFAR-100 Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <span class="mt-2 text-sm text-slate-500 block pt-2">CIFAR-100</span>
+                </div>
+                <div class="text-center space-y-2">
+                    <img src="images/epochs/tiny_imagenet_rsa_plot-1.png" alt="Tiny-ImageNet Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <img src="images/epochs/tiny_imagenet_cka_plot-1.png" alt="Tiny-ImageNet Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <span class="mt-2 text-sm text-slate-500 block pt-2">Tiny-ImageNet</span>
+                </div>
+                  <div class="text-center space-y-2">
+                    <img src="images/epochs/mini_imagenet_rsa_plot-1.png" alt="Mini-ImageNet Temperature Experiment - RSA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <img src="images/epochs/mini_imagenet_cka_plot-1.png" alt="Mini-ImageNet Temperature Experiment - CKA" class="w-full object-contain rounded shadow-md transition hover:scale-105" />
+                    <span class="mt-2 text-sm text-slate-500 block pt-2">Mini-ImageNet</span>
+                </div>
             </div>
+             <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">
+              Corresponds to Figure 2 in the paper. We train CL, NSCL, SCL and CE models with ResNet-50 on CIFAR-100, Tiny-ImageNet and Mini-ImageNet datasets.
+              The plots show RSA (top) and CKA (bottom) between CL and the three supervised objectives. NSCL consistently achieves the highest alignment with CL.
+            </p>
         </div>
       </section>
 
@@ -182,11 +288,11 @@
         <h2 class="text-2xl font-bold mb-4">BibTeX</h2>
         <div class="relative">
 <pre id="bibtex-entry" class="bg-slate-900 text-green-200 p-4 rounded overflow-x-auto text-sm leading-relaxed font-mono">
-@misc{clnscl2026alignment,
+@misc{anonymous2026alignment,
     title={On the Alignment Between Supervised and Self-Supervised Contrastive Learning}, 
-    author={Achleshwar Luthra and Priyadarsi Mishra and Tomer Galanti},
+    author={Anonymous},
     year={2026},
-    publisher={arxiv}
+    publisher={ICLR}
 }
 </pre>
             <button onclick="copyBibtex(event)" class="absolute top-2 right-2 px-3 py-1 text-xs bg-slate-800 text-white border border-slate-700 rounded hover:bg-slate-700 transition">
@@ -204,8 +310,6 @@
     <!-- JS for animations and copy button -->
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        // KaTeX is loaded with defer, so it should be available here.
-        // This function will run after the DOM is ready, fixing the render error.
         renderMathInElement(document.body, {
             delimiters: [
                 {left: '$$', right: '$$', display: true},
@@ -213,7 +317,6 @@
             ]
         });
 
-        // Intersection Observer for animations
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -236,13 +339,29 @@
         document.execCommand('copy');
         document.body.removeChild(textArea);
         
-        // Use event.currentTarget to ensure we get the button
         const button = event.currentTarget;
         button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
         setTimeout(() => {
             button.innerHTML = '<i class="fas fa-copy mr-1"></i> Copy';
         }, 2000);
       }
+
+      function showTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('border-indigo-500', 'text-indigo-600');
+            button.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+        });
+
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+
+        const activeButton = document.getElementById('tab-' + tabName);
+        activeButton.classList.add('border-indigo-500', 'text-indigo-600');
+        activeButton.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+    }
     </script>
   </body>
 </html>
