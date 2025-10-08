@@ -82,8 +82,8 @@
         <p class="text-lg">
           Understanding this dynamic relationship is crucial. A close alignment throughout training would suggest that CL's learning process inherently mimics a supervised signal, providing a stronger 
           foundation for its empirical success and the transferability of its learned features. In this study, we analyze the alignment between CL and NSCL and find <strong class="text-red-600">a notable divergence in 
-          their parameter-space trajectories</strong>. Despite this, we demonstrate both that their learned <strong class="text-green-600">representations remain remarkably aligned</strong>.
-          We provide theoretical guarantees for this representation alignment and a better understanding of how this alignment varies with more classes, higher temperatures and batch-size.
+          their parameter-space trajectories</strong>. Despite this, we demonstrate that their learned <strong class="text-green-600">representations remain remarkably aligned</strong>.
+          We provide theoretical guarantees for this representation alignment and a better understanding of how this alignment depend on number of classes, higher temperatures and varying batch-sizes.
         </p>
       </section>
 
@@ -91,7 +91,7 @@
       <section class="mt-20 w-full max-w-5xl text-left">
         <h2 class="text-2xl font-bold mb-4">Methodology</h2>
         <p class="text-lg mb-4">
-            To investigate this, we conduct a controlled study focusing on the self-supervised contrastive loss, $L^{CL}$, and its supervised counterpart, $L^{NSCL}$. 
+            To investigate representation alignment, we conduct a controlled study focusing on the self-supervised contrastive loss, $L^{CL}$, and its supervised counterpart, $L^{NSCL}$. 
             We train two models under identical conditions—shared initialization, mini-batches, augmentations, and hyperparameters—to isolate the effect of the loss function itself.
         </p>
         <!-- Loss Equations -->
@@ -163,10 +163,10 @@
 
         <!-- Introduce theorem -->
         <p class="text-lg mb-4">
-            The divergence in weight space suggests that directly comparing model parameters isn't the full story. What truly matters for downstream performance 
-            is the <em>geometry</em> of the learned representations. To better quantify this, we analyze the alignment in "similarity space." Instead of tracking millions 
+            The divergence in weight space suggests that directly comparing model parameters isn't the best approach. What truly matters for downstream performance 
+            is the <em>geometry</em> of the learned representations. To better quantify this, we analyze the alignment in <strong>"similarity space"</strong>. Instead of tracking millions 
             of parameters, we track the $N \times N$ pairwise similarity matrix, $\Sigma$, whose entries $\Sigma_{ij}$ represent the cosine similarity between the embeddings 
-            of two inputs, $x_i$ and $x_j$. This perspective allows us to directly measure how the geometric structure of the representation space evolves and prove the 
+            of two inputs, $x_i$ and $x_j$. This perspective allows us to directly measure how the geometric structure of the representation space evolves via the 
             following bound.
         </p>
         <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-md">
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                      <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">Corresponds to Figure 5 in the paper. Here we vary $\eta$ with $B$ across three cases: $\eta=\tfrac{0.3B}{256}$, 
-                      $\eta=\tfrac{0.3\sqrt{B}}{256}$, and $\eta=\tfrac{0.3\sqrt[4]{B}}{256}$. Under $\mathcal{O}(B)$ scaling, CL–NSCL alignment decreases as $B$ grows whereas for the other two cases, alignment increases with $B$. </p>
+                      $\eta=\tfrac{0.3\sqrt{B}}{256}$, and $\eta=\tfrac{0.3\sqrt[4]{B}}{256}$. Under $\mathcal{O}(B)$ scaling, CL–NSCL alignment decreases as $B$ grows whereas for the other two cases, alignment overall increases with $B$. </p>
                 </div>
             </div>
         </section>
