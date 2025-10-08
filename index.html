@@ -68,20 +68,68 @@
         <h2 class="text-2xl font-bold mb-4">Overview</h2>
         <p class="text-lg mb-4">
           Self-supervised contrastive learning (CL) has achieved remarkable success, producing representations that rival supervised pre-training. 
-          <a href="https://dlfundamentals.github.io/ssl-is-approximately-sl/" class="text-blue-600 hover:underline">Recent theory</a> has shown that the CL loss closely approximates a supervised surrogate, Negatives-Only Supervised Contrastive Learning (NSCL), as the number of classes grows. 
+          <a href="https://dlfundamentals.github.io/ssl-is-approximately-sl/" class="text-blue-600 hover:underline">Recent work</a> has shown that the CL loss closely approximates a supervised surrogate, 
+          <strong>Negatives-only Supervised Contrastive Learning (NSCL)</strong>, as the number of classes grows. 
           But this similarity at the loss-level leaves a crucial question unresolved.
         </p>
 
         <div class="fade-in-up mx-auto my-8 w-full max-w-3xl rounded-md border border-black bg-indigo-50 px-6 py-4 text-center text-lg italic text-slate-800 shadow-sm">
           <strong>
-            Do contrastive and supervised models remain aligned throughout training, not just at the level of their objectives?
+            Do <span class="text-red-600">contrastive</span> and <span class="text-blue-600">supervised</span> models remain aligned throughout training, not just at the level of their objectives?
           </strong>
         </div>
 
         <p class="text-lg">
-          In this work, we show that while their parameters <strong class="text-red-600">diverge in weight space</strong>, their learned features <strong class="text-blue-700">remain aligned in representation space</strong>.
-          We provide theoretical guarantees for this representation alignment and empirically validate that this alignment strengthens with more classes and higher temperatures.
+          Understanding this dynamic relationship is crucial. A close alignment throughout training would suggest that CL's learning process inherently mimics a supervised signal, providing a stronger 
+          foundation for its empirical success and the transferability of its learned features. In this study, we analyze the alignment between CL and NSCL and find <strong class="text-red-600">a notable divergence in 
+          their parameter-space trajectories</strong>. Despite this, we demonstrate both that their learned <strong class="text-green-600">representations remain remarkably aligned</strong>.
+          We provide theoretical guarantees for this representation alignment and a better understanding of how this alignment varies with more classes, higher temperatures and batch-size.
         </p>
+      </section>
+
+      <!-- Methodology Section -->
+      <section class="mt-20 w-full max-w-5xl text-left">
+        <h2 class="text-2xl font-bold mb-4">Methodology</h2>
+        <p class="text-lg mb-4">
+            To investigate this, we conduct a controlled study focusing on the self-supervised contrastive loss, $L^{CL}$, and its supervised counterpart, $L^{NSCL}$. 
+            We train two models under identical conditions—shared initialization, mini-batches, augmentations, and hyperparameters—to isolate the effect of the loss function itself.
+        </p>
+        <!-- Loss Equations -->
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+              <!-- DCL Equation -->
+              <div class="border-2 border-red-600 bg-slate-50 rounded p-4 text-sm flex-1 hover:border-red-300">
+                <h4 class="text-center font-semibold mb-2 text-red-700">Self-supervised Contrastive Loss (CL)</h4>
+                $$\small
+                \mathcal{L}^{\mathrm{CL}}(f) = -\frac{1}{K^2N}\sum^{K}_{l_1,l_2=1}\sum_{i=1}^N
+                \log \left(
+                \frac{\exp(\mathrm{sim}(z^{l_1}_i, z^{l_2}_i)/\tau)}{
+                \sum^{K}_{l_3=1} \textcolor{red}{\sum_{j\in [N]\setminus \{i\}}} \exp (\mathrm{sim}(z^{l_1}_i, z^{l_3}_j)/\tau) }
+                \right)
+                $$
+              </div>
+
+              <!-- NSCL Equation -->
+              <div class="border-2 border-blue-600 bg-slate-50 rounded p-4 text-sm flex-1 hover:border-blue-300">
+                <h4 class="text-center font-semibold mb-2 text-blue-700">Negatives-only Supervised Contrastive Loss (NSCL)</h4>
+                $$\small
+                \mathcal{L}^{\mathrm{NSCL}}(f) = -\frac{1}{K^2N}\sum^{K}_{l_1,l_2=1}\sum_{i=1}^N
+                \log \left(
+                \frac{\exp(\mathrm{sim}(z^{l_1}_i, z^{l_2}_i)/\tau)}{
+                \sum^{K}_{l_3=1} \textcolor{blue}{\sum_{j: y_j \neq y_i}} \exp (\mathrm{sim}(z^{l_1}_i, z^{l_3}_j)/\tau) }
+                \right)
+                $$
+              </div>
+            </div>
+
+
+            <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+            <li><strong>$\mathrm{sim(\cdot, \cdot)}$</strong> denotes cosine similarity</li>
+            <li><strong>$N$</strong>: Total number of <strong>training</strong> samples</li>
+            <li><strong>$K$</strong>: Total number of augmented versions of each sample</li>
+            <li><strong>$z^l_i = f(\alpha_k(x_i))$</strong>, where <strong>$x_i$</strong> is an input image
+              and <strong>$\alpha_k$</strong> is its $k^{th}$ augmentation.</li>
+            </ul>
+        </div>
       </section>
       
       <!-- Key Claims -->
@@ -92,7 +140,9 @@
         <div class="mb-10 p-6 border rounded-md shadow-sm bg-white fade-in-up">
             <h3 class="text-xl font-semibold mb-4">1 · Divergence in Weights vs. Alignment in Representations</h3>
             <p class="mb-4">
-                Our central finding is a tale of two spaces. When trained with shared randomness (initialization, batches, augmentations), <span class="text-red-600 font-medium">CL</span> and <span class="text-blue-700 font-medium">NSCL</span> models take different paths in parameter space, leading to a significant weight gap. However, the representational geometry they induce remains remarkably similar, as measured by metrics like CKA and RSA.
+                Our central finding is a tale of two spaces. When trained with shared randomness (initialization, batches, augmentations), 
+                <span class="text-red-600 font-medium">CL</span> and <span class="text-blue-700 font-medium">NSCL</span> models take different paths in parameter space, 
+                leading to a significant weight gap. However, the representational geometry they induce remains remarkably similar.
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -106,7 +156,7 @@
               </div>
             </div>
              <p class="text-sm text-slate-500 text-center max-w-4xl mx-auto italic mt-4">
-              Corresponds to Figure 1 in the paper.
+              Corresponds to Figure 1 in the paper. See Appendix A for additional details.
             </p>
         </div>
         <!-- End Claim 1 -->
@@ -118,13 +168,32 @@
           <li>Verify all links (Code, Paper) point to the correct destinations.</li>
           <li>Double-check all citations and references for accuracy.</li>
         </ul>
-        <p class="mt-6">
-          We prove that the Frobenius norm distance between the similarity matrices is bounded, ensuring this alignment.
+
+        <p class="text-lg mb-4">
+            The divergence in weight space suggests that directly comparing model parameters isn't the full story. What truly matters for downstream performance 
+            is the <em>geometry</em> of the learned representations. To better quantify this, we analyze the alignment in "similarity space." Instead of tracking millions 
+            of parameters, we track the $N \times N$ pairwise similarity matrix, $\Sigma$, whose entries $\Sigma_{ij}$ represent the cosine similarity between the embeddings 
+            of two inputs, $x_i$ and $x_j$. This perspective allows us to directly measure how the geometric structure of the representation space evolves and prove the 
+            following bound.
         </p>
-        <p class="mb-2 text-center text-sm md:text-base">
-            $$||\Sigma_{T}^{\textcolor{red}{\text{CL}}}-\Sigma_{T}^{\textcolor{blue}{\text{NSCL}}}||_{F} \le \exp\left(\frac{1}{2\tau^{2}B}\sum_{t=0}^{T-1}\eta_{t}\right)\frac{1}{\tau\sqrt{B}}\left(\sum_{t=0}^{T-1}\eta_{t}\right)\Delta_{C,\delta}(B;\tau)$$
+        <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-md">
+           <p class="mb-2 text-center text-sm md:text-base">
+              $$||\Sigma_{T}^{\textcolor{red}{\text{CL}}}-\Sigma_{T}^{\textcolor{blue}{\text{NSCL}}}||_{F} 
+              \le 
+              \exp\left(\frac{1}{2\tau^{2}B}\sum_{t=0}^{T-1}\eta_{t}\right)\frac{1}{\tau\sqrt{B}}\left(\sum_{t=0}^{T-1}\eta_{t}\right) \cdot \mathcal{O}\left(\frac{e^{2/\tau}}{C}\right)$$
+            </p>
+            <p class="text-sm italic text-right text-slate-500 mb-4">Theorem (1)</p>
+        </div>
+        
+        <!-- Note on CKA and RSA -->
+        <p class="text-md mt-6">
+            <strong>Note on Metrics:</strong> Theorem (1) provides a direct bound on the difference between the two similarity matrices. 
+            In our experiments, we use standard and widely-accepted metrics—<a href="https://arxiv.org/abs/1905.00414" class="text-blue-600 hover:underline">Centered Kernel Alignment (CKA)</a> 
+            and <a href="https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/neuro.06.004.2008/full" class="text-blue-600 hover:underline">Representational Similarity Analysis (RSA)</a>
+            —to empirically measure alignment.
+            These metrics are fundamentally dependent on the underlying similarity matrices; a small distance between the matrices directly implies high CKA and RSA scores. 
+            For the formal derivation connecting our bound to these specific metrics, we refer the interested reader to Corollaries 1 and 2 in our paper.
         </p>
-        <p class="text-sm italic text-right text-slate-500 mb-4">Theorem (1)</p>
 
         <!-- Claim 2 - Factors Influencing Alignment -->
         <section class="mt-10 mb-10 w-full fade-in-up">
@@ -287,14 +356,14 @@
       <section id="bibtex" class="mt-24 max-w-5xl w-full fade-in-up">
         <h2 class="text-2xl font-bold mb-4">BibTeX</h2>
         <div class="relative">
-<pre id="bibtex-entry" class="bg-slate-900 text-green-200 p-4 rounded overflow-x-auto text-sm leading-relaxed font-mono">
-@misc{anonymous2026alignment,
-    title={On the Alignment Between Supervised and Self-Supervised Contrastive Learning}, 
-    author={Anonymous},
-    year={2026},
-    publisher={ICLR}
-}
-</pre>
+      <pre id="bibtex-entry" class="bg-slate-900 text-green-200 p-4 rounded overflow-x-auto text-sm leading-relaxed font-mono">
+      @misc{clnscl2025alignment,
+          title={On the Alignment Between Supervised and Self-Supervised Contrastive Learning}, 
+          author={Achleshwar Luthra and Priyadarsi Mishra and Tomer Galanti},
+          year={2025},
+          publisher={arXiv},
+      }
+      </pre>
             <button onclick="copyBibtex(event)" class="absolute top-2 right-2 px-3 py-1 text-xs bg-slate-800 text-white border border-slate-700 rounded hover:bg-slate-700 transition">
                 <i class="fas fa-copy mr-1"></i> Copy
             </button>
@@ -302,8 +371,10 @@
       </section>
 
       <!-- Footer -->
-      <footer class="mt-20 border-t pt-6 text-center text-sm text-slate-500 w-full max-w-5xl">
-        © 2025 | Website template adapted from <a href="https://github.com/achleshwar/achleshwar.github.io" class="underline" target="_blank">here</a>.
+      <footer class="mt-20 border-t pt-6 text-center text-sm text-slate-500">
+        © 2025 Built with ☕. <br />
+        Contact: <a href="mailto:luthra@tamu.edu" class="underline">luthra@tamu.edu</a>
+        &middot; <a href="mailto:galanti@tamu.edu" class="underline">galanti@tamu.edu</a>
       </footer>
     </main>
 
