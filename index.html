@@ -33,7 +33,26 @@
     </style>
   </head>
   <body class="bg-slate-50 text-slate-800">
-    <main class="flex flex-col items-center px-4 py-10 min-h-screen">
+    <!-- Dropdown Navigation -->
+    <header class="w-full max-w-5xl mx-auto py-4 px-4 flex justify-end">
+      <div class="relative inline-block text-left">
+        <div>
+          <button type="button" onclick="toggleDropdown(event)" class="inline-flex justify-center w-full rounded-md border border-slate-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
+            Related Works
+            <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-10" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+          <div class="py-1" role="none">
+            <a href="https://dlfundamentals.github.io/ssl-is-approximately-sl/" target="_blank" class="text-slate-700 block px-4 py-2 text-sm hover:bg-slate-100" role="menuitem" tabindex="-1">CL ≈ SCL (NeurIPS 2025)</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="flex flex-col items-center px-4 pt-2 pb-10 min-h-screen">
       <!-- Hero Section -->
       <section id="hero" class="w-full max-w-5xl text-center fade-in-up">
         <h1 class="mb-4 text-4xl font-extrabold leading-tight md:text-5xl">
@@ -46,7 +65,7 @@
             · <a href="https://www.linkedin.com/in/priyadarsi-mishra/" class="hover:underline" target="_blank">Priyadarsi Mishra</a>
             · <a href="https://tomergalanti.github.io/index.html" class="hover:underline" target="_blank">Tomer Galanti</a>
           </p>
-          <p class="text-slate-500 font-medium">Texas A&amp;M University</p>
+          <p class="text-slate-500 font-medium">Texas A&M University</p>
           <p class="text-slate-600 italic">Paper under review</p>
         </div>
       </section>
@@ -126,7 +145,7 @@
             <li><strong>$\mathrm{sim(\cdot, \cdot)}$</strong> denotes cosine similarity</li>
             <li><strong>$N$</strong>: Total number of <strong>training</strong> samples</li>
             <li><strong>$K$</strong>: Total number of augmented versions of each sample</li>
-            <li><strong>$z^l_i = f(\alpha_k(x_i))$</strong>, where <strong>$x_i$</strong> is an input image
+            <li><strong>$z^k_i = f(\alpha_k(x_i))$</strong>, where <strong>$x_i$</strong> is an input image
               and <strong>$\alpha_k$</strong> is its $k^{th}$ augmentation.</li>
             </ul>
         </div>
@@ -338,7 +357,7 @@
             class="px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 rounded text-center font-medium transition">
             Read the Paper
             </a>
-            <a href="#" target="_blank"
+            <a href="https://github.com/DLFundamentals/understanding_ssl_v2" target="_blank"
             class="px-6 py-3 border border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded text-center font-medium transition">
             View Code on GitHub
             </a>
@@ -425,6 +444,19 @@
         const activeButton = document.getElementById('tab-' + tabName);
         activeButton.classList.add('border-indigo-500', 'text-indigo-600');
         activeButton.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+    }
+    
+    function toggleDropdown(event) {
+        event.stopPropagation(); // prevent the window.onclick from firing immediately
+        document.getElementById('dropdown-menu').classList.toggle('hidden');
+    }
+
+    // Close dropdown if clicked outside
+    window.onclick = function(event) {
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        if (!dropdownMenu.classList.contains('hidden')) {
+            dropdownMenu.classList.add('hidden');
+        }
     }
     </script>
   </body>
